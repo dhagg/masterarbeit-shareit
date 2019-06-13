@@ -8,14 +8,22 @@ provider:
       # example: 123123123123123123123123123
     COGNITIVE_SERVICE_URI: replace_me
       # example: https://westeurope.api.cognitive.microsoft.com/vision/v2.0/analyze
+    AZURE_EVENTGATEWAY_URL: replace_me
+      # example: https://gatewayname.westus2-1.eventgrid.azure.net/api/events
+    AZURE_EVENTGATEWAY_KEY: replace_me
+      # example: 123123123123123123123123123
 
 plugins:
   - serverless-azure-functions
 
 custom:
-  stage: dev
+  stage: nats-hierarchy
 
 functions:
   imagerecognition:
     handler: image.recognition
     events:
+      # - eventGrid:
+        # x-azure-settings:
+          # name: eventGridEvent
+          # direction: in

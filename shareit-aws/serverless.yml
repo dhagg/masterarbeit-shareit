@@ -8,14 +8,17 @@ provider:
   environment:
     PHOTOBUCKET: ${self:custom.photobucket}
     DB: ${self:custom.db}
+    SNS_TOPIC_ARN: replace_me:${self:custom.snstopic}
+      # example: arn:aws:sns:us-east-1:123123123123:${self:custom.snstopic}
 
 plugins:
   - serverless-s3-remover
 
 custom:
-  stage: dev
+  stage: nats-hierarchy
   photobucket: shareit-${self:custom.stage}
   db: shareit-${self:custom.stage}
+  snstopic: shareit-${self:custom.stage}
   remover:
     prompt: true
     buckets:
@@ -31,6 +34,13 @@ functions:
           cors: true
   tags:
     handler: tags.write
+    events:
+      - sns:
+          topicName: ${self:custom.snstopic}
+          displayName: ${self:custom.snstopic}
+          filterPolicy:
+            type:
+              - prefix: azure.functions.imagerecognition.done
   upload:
     handler: upload.upload
     memorySize: 2048
@@ -41,6 +51,15 @@ functions:
           cors: true
   compress:
     handler: compress.compress
+    events:
+      - sns:
+          topicName: ${self:custom.snstopic}
+          displayName: ${self:custom.snstopic}
+          filterPolicy:
+            type:
+              - prefix: aws.s3.objectcreated
+            source:
+              - prefix: arn:aws:s3:::${self:custom.photobucket}/upload/
   interception:
     handler: interception.handler
     events:
