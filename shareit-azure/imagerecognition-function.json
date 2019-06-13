@@ -1,0 +1,6 @@
+{
+    "disabled": false,
+    "bindings": [],
+    "entryPoint": "recognition",
+    "scriptFile": "image.js"
+}

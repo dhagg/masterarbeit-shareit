@@ -1,0 +1,110 @@
+service: shareit-${self:custom.stage}
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  role: replace_me
+    # example: arn:aws:iam::123123123123:role/shareit-role
+  environment:
+    PHOTOBUCKET: ${self:custom.photobucket}
+    DB: ${self:custom.db}
+
+plugins:
+  - serverless-s3-remover
+
+custom:
+  stage: dev
+  photobucket: shareit-${self:custom.stage}
+  db: shareit-${self:custom.stage}
+  remover:
+    prompt: true
+    buckets:
+      - ${self:custom.photobucket}
+
+functions:
+  photos:
+    handler: photos.get
+    events:
+      - http:
+          path: photos
+          method: get
+          cors: true
+  tags:
+    handler: tags.write
+  upload:
+    handler: upload.upload
+    memorySize: 2048
+    events:
+      - http:
+          path: upload
+          method: post
+          cors: true
+  compress:
+    handler: compress.compress
+  interception:
+    handler: interception.handler
+    events:
+      - s3:
+          bucket: imageuploadbucket
+          event: s3:ObjectCreated:*
+
+# Additional Ressource to AWS
+resources:
+  Resources:
+    # S3 Bucket
+    S3BucketImageuploadbucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:custom.photobucket}
+        CorsConfiguration:
+          CorsRules:
+            -
+              AllowedOrigins:
+                - '*'
+              AllowedHeaders:
+                - '*'
+              AllowedMethods:
+                - GET
+                - PUT
+                - POST
+                - DELETE
+                - HEAD
+              MaxAge: 3000
+    # Make Photos available to the public
+    BucketPolicyImageuploadbucket:
+      Type: 'AWS::S3::BucketPolicy'
+      Properties:
+        PolicyDocument:
+          Statement:
+            -
+              Action:
+                - "s3:GetObject"
+              Effect: "Allow"
+              Resource:
+                Fn::Join:
+                  - ""
+                  -
+                    - "arn:aws:s3:::"
+                    - ${self:custom.photobucket}
+                    - "/*"
+              Principal: "*"
+        Bucket:
+          Ref: S3BucketImageuploadbucket
+    # Allow Interception to receive Events from S3 Bucket
+    InterceptionLambdaPermissionImageuploadbucketS3:
+      Type: AWS::Lambda::Permission
+      Properties:
+        SourceArn: arn:aws:s3:::${self:custom.photobucket}
+
+    # Create DynamoDB Table to insert metadata of photos
+    PhotosTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.db}
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST

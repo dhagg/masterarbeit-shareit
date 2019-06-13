@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Share it!</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <link rel="stylesheet" href="styles.css">
+  <script src="config.js"></script>
+  <script src="script.js"></script>
+</head>
+<body>
+  <h1><a href="#" onclick="updatePhotos()">Share it!</a></h1>
+  <div class="card">
+    <p>
+      <input id="upload_file" type="file" onchange="previewPhoto()">
+      <button id="upload_button" onclick="uploadPhoto()" style="display:none">Upload</button>
+      <p id="upload_status"></p>
+    </p>
+    <p>
+      <img id="upload_preview" src="" height="200" alt="Preview..." style="display:none">
+    </p>
+  </div>
+  <div class="card" id="filter_card" style="display: none;">
+    <p>
+      Filter: <span id="filter_tag"></span>
+    </p>
+    <p>
+      <a href="#" onclick="resetFilter();">reset</a>
+    </p>
+  </div>
+  <div id="content"></div>
+  <script>showUpload(false);updatePhotos();</script>
+</body>
+</html>
