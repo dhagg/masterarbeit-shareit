@@ -1,11 +1,11 @@
-# Share-It
+# Share-It - NATS Central
 This is an example application for **event-based multi-cloud serverless computing**.
 It's development was part of the MSc Thesis *Serverless Applikationen in Multi-Cloud Umgebungen: Architektur und Design eventbasierter Kommunikation* by *Daniel Hagg*.
 
 Different prototyps are presented in different branches/pull requests:
 * *master*: Non-functional original, all other branches are based on.
 * *direct-call*: Prototyp "Direkter Aufruf"
-* *nats-central*: Prototyp "Zentrales Gateway"
+* **nats-central**: Prototyp "Zentrales Gateway"
 * *decentral-gateways*: Prototyp "Dezentrale Gateways"
 * *nats-hierarchy*: Prototyp "Hierarchische Struktur von Gateways"
 
@@ -14,6 +14,10 @@ Go to `Pull requests` -> Name of prototype -> `Files changend` to see the diffs 
 
 ## Architecture
 ![Architecture](img/architecture.jpg "Architecture")
+
+
+## Changes
+![Changes](img/prototyp_nats.jpg "Changes")
 
 
 ## Prerequirements
@@ -37,6 +41,7 @@ Every deployed environment needs an unique `stage`-name. This is caused by S3. I
 1. Change to directory `shareit-aws`:
    1. Install node modules: `./install_node_modules.sh` (Node Module 'sharp' needs a certain plattform to run at AWS)
    1. Change `stage` name in `serverless.yaml`
+   1. Change `NATS` Url in `serverless.yaml`
    1. `sls deploy`
 
 
@@ -44,7 +49,19 @@ Every deployed environment needs an unique `stage`-name. This is caused by S3. I
 1. Change to directory `shareit-aws`:
    1. `npm install`
    1. Change `stage` name in `serverless.yaml`
+   1. Change `NATS` Url in `serverless.yaml`
    1. `sls deploy`
+
+
+### NATS
+1. Run NATS Streaming. For example in Docker: `docker run -d -p 4222:4222 -p 8222:8222 nats-streaming --user <USERNAME> --pass <PASSWORD>`. TLS Encryption is not configured by default. NATS must be publicly available from the internet!
+1. Change to directory `cloud-adapter`:
+   1. `npm install`
+   1. in `config.js` the configuration which function is running caused by with event:
+      1. Change NATS url
+      1. Change name of `tags` function
+      1. Change name of `compress` function
+   1. Run `run.sh` [(AWS Credentials have to be set as Environment Variables)](https://docs.aws.amazon.com/de_de/cli/latest/userguide/cli-configure-envvars.html)
 
 
 ### Website

@@ -8,14 +8,22 @@ provider:
       # example: 123123123123123123123123123
     COGNITIVE_SERVICE_URI: replace_me
       # example: https://westeurope.api.cognitive.microsoft.com/vision/v2.0/analyze
+    NATS: replace_me
+      # example: nats://USERNAME:PASSWORD@url.to.nats/
 
 plugins:
   - serverless-azure-functions
 
 custom:
-  stage: dev
+  stage: nats-central
 
 functions:
   imagerecognition:
     handler: image.recognition
     events:
+      - http: true
+        x-azure-settings:
+          name: imagerecognition
+          methods:
+            - post
+          route: imagerecognition

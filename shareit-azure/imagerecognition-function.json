@@ -1,6 +1,22 @@
 {
     "disabled": false,
-    "bindings": [],
+    "bindings": [
+        {
+            "type": "httpTrigger",
+            "direction": "in",
+            "name": "imagerecognition",
+            "route": "imagerecognition",
+            "authLevel": "function",
+            "methods": [
+                "post"
+            ]
+        },
+        {
+            "type": "http",
+            "direction": "out",
+            "name": "$return"
+        }
+    ],
     "entryPoint": "recognition",
     "scriptFile": "image.js"
 }

@@ -8,12 +8,14 @@ provider:
   environment:
     PHOTOBUCKET: ${self:custom.photobucket}
     DB: ${self:custom.db}
+    NATS: replace_me
+      # example: nats://USERNAME:PASSWORD@url.to.nats/
 
 plugins:
   - serverless-s3-remover
 
 custom:
-  stage: dev
+  stage: nats-central
   photobucket: shareit-${self:custom.stage}
   db: shareit-${self:custom.stage}
   remover:
@@ -31,6 +33,8 @@ functions:
           cors: true
   tags:
     handler: tags.write
+    #events:
+      #multicloud-event
   upload:
     handler: upload.upload
     memorySize: 2048
@@ -41,6 +45,8 @@ functions:
           cors: true
   compress:
     handler: compress.compress
+    #events:
+      #multicloud-event
   interception:
     handler: interception.handler
     events:
