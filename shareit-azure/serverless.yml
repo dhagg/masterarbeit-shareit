@@ -8,14 +8,27 @@ provider:
       # example: 123123123123123123123123123
     COGNITIVE_SERVICE_URI: replace_me
       # example: https://westeurope.api.cognitive.microsoft.com/vision/v2.0/analyze
+    AZURE_EVENTGATEWAY_URL: replace_me
+      # example: https://gatewayname.westus2-1.eventgrid.azure.net/api/events
+    AZURE_EVENTGATEWAY_KEY: replace_me
+      # example: 123123123123123123123123123
+    AWS_GATEWAY_URL: replace_me
+      # example: https://123123123.execute-api.us-east-1.amazonaws.com/dev/eventgateway
+    AWS_GATEWAY_KEY: replace_me
+      # self defined key, example: abcabcacbabcabcabcacbabcabcabcacbabc
 
 plugins:
   - serverless-azure-functions
 
 custom:
-  stage: dev
+  stage: decentral-gateways
 
 functions:
   imagerecognition:
     handler: image.recognition
+    events:
+  # EventSync synchronizes events to other gateways.
+  # All Events with a type starting with "azure." are synced
+  eventsync:
+    handler: eventsync.handler
     events:

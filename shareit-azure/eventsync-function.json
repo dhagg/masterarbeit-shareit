@@ -1,0 +1,6 @@
+{
+    "disabled": false,
+    "bindings": [],
+    "entryPoint": "handler",
+    "scriptFile": "eventsync.js"
+}

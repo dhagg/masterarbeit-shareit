@@ -2,15 +2,28 @@
 
 const CloudEvent = require('cloudevents-sdk');
 const sendEvent = require('./sendEvent');
+const eventParser = require('./cloudevents-parser');
 
 /**
 * Intercept AWS Event, convert it to CloudEvent and Emit the Event.
 */
 module.exports.handler = (event) => {
-  event.Records.forEach((awsEvent) => {
-    var cloudevent = parseEvent(awsEvent);
-    sendEvent(cloudevent, () => {})
-  });
+  if(event.Records) {
+    event.Records.forEach((awsEvent) => {
+      var cloudevent = parseEvent(awsEvent);
+      sendEvent(cloudevent, () => {})
+    });
+  } else if(event.body) {
+    console.log("HTTP");
+    if (!(event.headers && event.headers['aeg-sas-key'] && event.headers['aeg-sas-key'] == process.env.AWS_GATEWAY_KEY)) {
+      console.log("Not Authorized!");
+      return;
+    }
+    
+    var reqEvent = JSON.parse(event.body);
+    var cloudevent = eventParser(reqEvent);
+    sendEvent(cloudevent);
+  }
 };
 
 /**
