@@ -9,6 +9,8 @@ Different prototyps are presented in different branches/pull requests:
 * *decentral-gateways*: Prototyp "Dezentrale Gateways"
 * *nats-hierarchy*: Prototyp "Hierarchische Struktur von Gateways"
 
+Go to `Pull requests` -> Name of prototype -> `Files changend` to see the diffs of each prototype.
+
 
 ## Architecture
 ![Architecture](img/architecture.jpg "Architecture")
