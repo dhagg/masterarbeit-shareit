@@ -7,7 +7,7 @@ const dynamo = new AWS.DynamoDB.DocumentClient();
 * Writes the received tags of a photo to DynamoDB.
 */
 module.exports.write = (event, context, callback) => {
-  writeTags(JSON.parse(event.body).data);
+  writeTags(event.data);
 };
 
 function writeTags(data) {

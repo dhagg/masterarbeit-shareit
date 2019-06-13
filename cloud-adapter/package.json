@@ -1,22 +1,18 @@
 {
-  "name": "shareit-aws",
-  "version": "1.0.0",
+  "name": "nats-consumer",
+  "version": "0.1.0",
   "description": "",
-  "main": "photos.js",
+  "main": "send.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "aws-sdk": "^2.439.0",
     "cloudevents-sdk": "^0.2.0",
-    "file-type": "^10.9.0",
     "nats": "^1.2.10",
     "node-nats-streaming": "^0.2.2",
-    "sha1": "^1.1.1",
-    "sharp": "^0.22.0"
-  },
-  "devDependencies": {
-    "serverless-s3-remover": "^0.6.0"
+    "request": "^2.88.0"
   }
 }
