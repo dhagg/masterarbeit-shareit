@@ -8,12 +8,16 @@ provider:
   environment:
     PHOTOBUCKET: ${self:custom.photobucket}
     DB: ${self:custom.db}
+    AZURE_IMAGERECOGNITION: replace_me
+      # example: https://servicename.azurewebsites.net/api/imagerecognition?code=123secretcode123
+    AWS_TAGS_KEY: replace_me
+      # self defined key, example: 12312312312312312312312312312312313123123123
 
 plugins:
   - serverless-s3-remover
 
 custom:
-  stage: dev
+  stage: direct-call
   photobucket: shareit-${self:custom.stage}
   db: shareit-${self:custom.stage}
   remover:
@@ -31,6 +35,8 @@ functions:
           cors: true
   tags:
     handler: tags.write
+    events:
+      - http: POST tags
   upload:
     handler: upload.upload
     memorySize: 2048
@@ -41,12 +47,20 @@ functions:
           cors: true
   compress:
     handler: compress.compress
+    events:
+      - s3:
+          bucket: imageuploadbucket
+          event: s3:ObjectCreated:*
+          rules:
+            - prefix: upload/
   interception:
     handler: interception.handler
     events:
       - s3:
           bucket: imageuploadbucket
           event: s3:ObjectCreated:*
+          rules:
+            - prefix: compressed/
 
 # Additional Ressource to AWS
 resources:
@@ -90,8 +104,12 @@ resources:
               Principal: "*"
         Bucket:
           Ref: S3BucketImageuploadbucket
-    # Allow Interception to receive Events from S3 Bucket
+    # Allow Interception and Compress to receive Events from S3 Bucket
     InterceptionLambdaPermissionImageuploadbucketS3:
+      Type: AWS::Lambda::Permission
+      Properties:
+        SourceArn: arn:aws:s3:::${self:custom.photobucket}
+    CompressLambdaPermissionImageuploadbucketS3:
       Type: AWS::Lambda::Permission
       Properties:
         SourceArn: arn:aws:s3:::${self:custom.photobucket}
