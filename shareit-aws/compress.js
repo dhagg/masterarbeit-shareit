@@ -9,7 +9,9 @@ const sharp = require('sharp');
 * Read an Image from S3 Bucket, Compresses and Resizes it and writes it back to S3.
 */
 module.exports.compress = (event, context, callback) => {
-  compress(event.data.s3.object.key);
+  event.Records.forEach((record) => {
+    compress(record.s3.object.key);
+  });
 };
 
 function compress(img) {

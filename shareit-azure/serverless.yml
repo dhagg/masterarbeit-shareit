@@ -8,14 +8,24 @@ provider:
       # example: 123123123123123123123123123
     COGNITIVE_SERVICE_URI: replace_me
       # example: https://westeurope.api.cognitive.microsoft.com/vision/v2.0/analyze
+    AWS_TAGS: replace_me
+      # example: https://123123123.execute-api.us-east-1.amazonaws.com/dev/tags
+    AWS_TAGS_KEY: replace_me
+      # self defined key, example: 12312312312312312312312312312312313123123123
 
 plugins:
   - serverless-azure-functions
 
 custom:
-  stage: dev
+  stage: direct-call
 
 functions:
   imagerecognition:
     handler: image.recognition
     events:
+      - http: true
+        x-azure-settings:
+          name: imagerecognition
+          methods:
+            - post
+          route: imagerecognition

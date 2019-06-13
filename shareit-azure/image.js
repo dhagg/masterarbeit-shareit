@@ -12,7 +12,7 @@ module.exports.recognition = function (context, req) {
   var imageUrl = undefined;
   var imageId = undefined;
 
-  var reqEvent = req;
+  var reqEvent = req.body;
 
   // Check if the event is a CloudEvent. Read imageUrl and imageId.
   if (reqEvent.cloudEventsVersion && reqEvent.cloudEventsVersion == "0.1") {

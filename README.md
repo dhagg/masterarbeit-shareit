@@ -1,19 +1,21 @@
-# Share-It
+# Share-It - Direct Call
 This is an example application for **event-based multi-cloud serverless computing**.
 It's development was part of the MSc Thesis *Serverless Applikationen in Multi-Cloud Umgebungen: Architektur und Design eventbasierter Kommunikation* by *Daniel Hagg*.
 
 Different prototyps are presented in different branches/pull requests:
 * *master*: Non-functional original, all other branches are based on.
-* *direct-call*: Prototyp "Direkter Aufruf"
+* **direct-call**: Prototyp "Direkter Aufruf"
 * *nats-central*: Prototyp "Zentrales Gateway"
 * *decentral-gateways*: Prototyp "Dezentrale Gateways"
 * *nats-hierarchy*: Prototyp "Hierarchische Struktur von Gateways"
 
-Go to `Pull requests` -> Name of prototype -> `Files changend` to see the diffs of each prototype.
-
 
 ## Architecture
 ![Architecture](img/architecture.jpg "Architecture")
+
+
+## Changes
+![Changes](img/prototyp_direct_call.jpg "Changes")
 
 
 ## Prerequirements
@@ -45,6 +47,18 @@ Every deployed environment needs an unique `stage`-name. This is caused by S3. I
    1. `npm install`
    1. Change `stage` name in `serverless.yaml`
    1. `sls deploy`
+
+
+### Connecting AWS and Azure
+1. in `shareit-aws/serverless.yaml`:
+   1. Get the url with authentification key from azure and change `AZURE_IMAGERECOGNITION`. You can get the url via portal.azure.com -> Navigate to the deployed function -> Get Function-Url (See Screenshot below).
+   1. Create Random Key in `AWS_TAGS_KEY`.
+1. in `shareit-azure/serverless.yaml`
+   1. Copy random key from AWS in `AWS_TAGS_KEY`
+   1. Copy AWS API Gateway URL with function call for `tags` in `AWS_TAGS`.
+1. Deploy both projects a second time or change environment variables.
+
+![Get Azure Functions URL](img/portal.azue.com_get_function_url.jpg "Get Azure Functions URL")
 
 
 ### Website
